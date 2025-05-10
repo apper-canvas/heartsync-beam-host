@@ -49,6 +49,10 @@ function AppContent({ isDarkMode, toggleDarkMode }) {
   const { needsOnboarding } = useUser();
   
   // Icons
+  const SunIcon = getIcon('Sun');
+  const MoonIcon = getIcon('Moon');
+  
+  // Return the UI
   return (
     <div className="min-h-screen">
       {/* Header */}
