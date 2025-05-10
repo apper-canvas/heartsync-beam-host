@@ -22,7 +22,6 @@ function App() {
   // Icons
   const SunIcon = getIcon('Sun');
   const MoonIcon = getIcon('Moon');
-  const MoonIcon = getIcon('Moon');
   
   // Toggle dark mode
   const toggleDarkMode = () => {
