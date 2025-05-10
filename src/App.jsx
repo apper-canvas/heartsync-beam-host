@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom'; 
 import { ToastContainer, toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import getIcon from './utils/iconUtils';
@@ -10,6 +10,9 @@ import { UserProvider, useUser } from './context/UserContext';
 // Pages
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+
+// Lazy load the modal to avoid unnecessary code
+const GenderPreferenceModal = lazy(() => import('./components/GenderPreferenceModal'));
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(
@@ -49,10 +52,6 @@ function AppContent({ isDarkMode, toggleDarkMode }) {
   const SunIcon = getIcon('Sun');
   const MoonIcon = getIcon('Moon');
   
-  // Import the modal only when needed to avoid unnecessary code
-  const GenderPreferenceModal = needsOnboarding 
-    ? require('./components/GenderPreferenceModal').default
-    : null;
 
   return (
     <div className="min-h-screen">
@@ -113,7 +112,13 @@ function AppContent({ isDarkMode, toggleDarkMode }) {
       />
       
       {/* Onboarding Modal */}
-      {needsOnboarding && <GenderPreferenceModal />}
+      {needsOnboarding && (
+        <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white dark:bg-surface-800 p-6 rounded-xl">Loading...</div>
+        </div>}>
+          <GenderPreferenceModal />
+        </Suspense>
+      )}
     </div>
   );
 }
