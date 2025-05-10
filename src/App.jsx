@@ -4,6 +4,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import getIcon from './utils/iconUtils';
 
+// Context
+import { UserProvider, useUser } from './context/UserContext';
+
 // Pages
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -30,6 +33,26 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  return (
+    <UserProvider>
+      <AppContent isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+    </UserProvider>
+  );
+}
+
+// Separating content to use context
+function AppContent({ isDarkMode, toggleDarkMode }) {
+  const { needsOnboarding } = useUser();
+  
+  // Icons
+  const SunIcon = getIcon('Sun');
+  const MoonIcon = getIcon('Moon');
+  
+  // Import the modal only when needed to avoid unnecessary code
+  const GenderPreferenceModal = needsOnboarding 
+    ? require('./components/GenderPreferenceModal').default
+    : null;
 
   return (
     <div className="min-h-screen">
@@ -88,6 +111,9 @@ function App() {
         theme={isDarkMode ? "dark" : "light"}
         toastClassName="rounded-xl shadow-lg"
       />
+      
+      {/* Onboarding Modal */}
+      {needsOnboarding && <GenderPreferenceModal />}
     </div>
   );
 }
